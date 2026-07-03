@@ -1,6 +1,6 @@
 import {
   pgTable, pgEnum, uuid, text, integer,
-  timestamp, jsonb
+  timestamp, jsonb, primaryKey
 } from 'drizzle-orm/pg-core'
 
 export const backgroundEnum = pgEnum('background', ['non_technical', 'some_coding', 'developer'])
@@ -28,7 +28,7 @@ export const accounts = pgTable('accounts', {
   scope: text('scope'),
   id_token: text('id_token'),
   session_state: text('session_state'),
-})
+}, (t) => [primaryKey({ columns: [t.provider, t.providerAccountId] })])
 
 export const sessions = pgTable('sessions', {
   sessionToken: text('session_token').primaryKey(),
@@ -40,7 +40,7 @@ export const verificationTokens = pgTable('verification_tokens', {
   identifier: text('identifier').notNull(),
   token: text('token').notNull(),
   expires: timestamp('expires', { mode: 'date' }).notNull(),
-})
+}, (t) => [primaryKey({ columns: [t.identifier, t.token] })])
 
 export const learnerProfiles = pgTable('learner_profiles', {
   id: uuid('id').primaryKey().defaultRandom(),
